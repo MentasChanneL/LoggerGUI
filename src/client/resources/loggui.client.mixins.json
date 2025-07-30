@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.prikolz.loggui.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"OptionsMixin",
+		"MinecraftMixin",
+		"KeyMappingMixin",
+		"OptionsScreenMixin",
+		"ScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
