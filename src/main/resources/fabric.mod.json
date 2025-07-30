@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "loggui",
 	"version": "${version}",
-	"name": "LogGUI",
+	"name": "Log GUI",
 	"description": "Viewing logs in the game. Default key bind '`' and '~'.",
 	"environment": "client",
 	"authors": [
