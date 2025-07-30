@@ -1,0 +1,12 @@
+{
+  "key.logger": "§eProtokolle öffnen",
+  "loggui.gui.title": "Spielprotokolle",
+  "loggui.gui.refresh": "Aktualisieren",
+  "loggui.gui.split_times": "Protokolle teilen",
+  "loggui.gui.use_colors": "Farben verwenden",
+  "loggui.gui.tooltip.close": "Menü schließen",
+  "loggui.gui.tooltip.refresh": "Spielprotokolle aktualisieren",
+  "loggui.gui.tooltip.split_times": "Protokolle teilen, um die Lesbarkeit zu verbessern",
+  "loggui.gui.tooltip.use_colors": "Warnungen und Fehler werden hervorgehoben",
+  "loggui.gui.tooltip.options": "Spielprotokolle öffnen"
+}

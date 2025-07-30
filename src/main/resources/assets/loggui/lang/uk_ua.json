@@ -1,0 +1,12 @@
+{
+  "key.logger": "§eВідкрити жунрал",
+  "loggui.gui.title": "Журнал ігри",
+  "loggui.gui.refresh": "Оновити",
+  "loggui.gui.split_times": "Розділити елементи",
+  "loggui.gui.use_colors": "Використовувати кольори",
+  "loggui.gui.tooltip.close": "Закрити меню",
+  "loggui.gui.tooltip.refresh": "Оновити відображуваний журнал",
+  "loggui.gui.tooltip.split_times": "Розділення елементів для підвищення читабельності",
+  "loggui.gui.tooltip.use_colors": "Виділяє попередження та помилки",
+  "loggui.gui.tooltip.options": "Відкрити журнал гри"
+}

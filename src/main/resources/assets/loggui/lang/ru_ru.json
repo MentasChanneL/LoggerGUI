@@ -1,0 +1,12 @@
+{
+  "key.logger": "§eОткрыть логи",
+  "loggui.gui.title": "Логи игры",
+  "loggui.gui.refresh": "Обновить",
+  "loggui.gui.split_times": "Разделить элементы",
+  "loggui.gui.use_colors": "Использовать цвета",
+  "loggui.gui.tooltip.close": "Закрыть меню",
+  "loggui.gui.tooltip.refresh": "Обновить отображаемые логи",
+  "loggui.gui.tooltip.split_times": "Разделение элементов для повышения читабельности",
+  "loggui.gui.tooltip.use_colors": "Выделяет предупреждения и ошибки",
+  "loggui.gui.tooltip.options": "Открыть логи игры"
+}

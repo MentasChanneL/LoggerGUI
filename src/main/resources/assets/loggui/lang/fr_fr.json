@@ -1,0 +1,12 @@
+{
+  "key.logger": "§eOuvrir les journaux",
+  "loggui.gui.title": "Journaux de jeu",
+  "loggui.gui.refresh": "Actualiser",
+  "loggui.gui.split_times": "Diviser les journaux",
+  "loggui.gui.use_colors": "Utiliser les couleurs",
+  "loggui.gui.tooltip.close": "Fermer le menu",
+  "loggui.gui.tooltip.refresh": "Actualiser les journaux de jeu",
+  "loggui.gui.tooltip.split_times": "Diviser les journaux pour une meilleure lisibilité",
+  "loggui.gui.tooltip.use_colors": "Les avertissements et les erreurs seront mis en évidence",
+  "loggui.gui.tooltip.options": "Ouvrir les journaux de jeu"
+}

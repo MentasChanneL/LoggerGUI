@@ -6,12 +6,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 
 import java.io.File;
@@ -27,7 +25,6 @@ public class LogGUIClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		Config.read();
 		keyConsole.setKey( InputConstants.Type.KEYSYM.getOrCreate(Config.KEY_BIND) );
-
 		LogGUI.LOGGER.info("initialized");
 	}
 

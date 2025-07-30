@@ -1,3 +1,12 @@
 {
-  "key.logger": "Open logs"
+  "key.logger": "§eOpen logs",
+  "loggui.gui.title": "Game logs",
+  "loggui.gui.refresh": "Refresh",
+  "loggui.gui.split_times": "Split logs",
+  "loggui.gui.use_colors": "Use colors",
+  "loggui.gui.tooltip.close": "Close menu",
+  "loggui.gui.tooltip.refresh": "Refresh game logs",
+  "loggui.gui.tooltip.split_times": "Split logs to improve readability",
+  "loggui.gui.tooltip.use_colors": "Warnings and errors will be highlighted",
+  "loggui.gui.tooltip.options": "Open game logs"
 }

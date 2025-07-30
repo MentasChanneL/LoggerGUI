@@ -3,16 +3,16 @@
 	"id": "loggui",
 	"version": "${version}",
 	"name": "LogGUI",
-	"description": "Viewing logs in the game.",
+	"description": "Viewing logs in the game. Default key bind '`' and '~'.",
+	"environment": "client",
 	"authors": [
 		"2M3V"
 	],
 	"contact": {
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/MentasChanneL/LoggerGUI"
 	},
 	"license": "MIT",
 	"icon": "assets/loggui/icon.png",
-	"environment": "*",
 	"entrypoints": {
 		"main": [
 			"com.prikolz.loggui.LogGUI"
