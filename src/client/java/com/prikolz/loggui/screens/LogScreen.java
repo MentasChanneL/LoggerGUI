@@ -1,8 +1,12 @@
-package com.prikolz.loggui;
+package com.prikolz.loggui.screens;
 
+import com.prikolz.loggui.Config;
+import com.prikolz.loggui.LogGUIClient;
+import com.prikolz.loggui.widget.CustomButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 public class LogScreen extends Screen {
@@ -12,11 +16,13 @@ public class LogScreen extends Screen {
     private static final Component EDIT_BOX = Component.translatable("loggui.gui.edit_box");
     private static final Component SPLIT_TIMES = Component.translatable("loggui.gui.split_times");
     private static final Component USE_COLORS = Component.translatable("loggui.gui.use_colors");
+    private static final Component CLOSE_MENU = CommonComponents.GUI_BACK;
 
     private static final Tooltip CLOSE_MENU_TOOLTIP = Tooltip.create( Component.translatable("loggui.gui.tooltip.close") );
     private static final Tooltip REFRESH_TOOLTIP = Tooltip.create( Component.translatable("loggui.gui.tooltip.refresh") );
     private static final Tooltip SPLIT_TIMES_TOOLTIP = Tooltip.create( Component.translatable("loggui.gui.tooltip.split_times") );
     private static final Tooltip USE_COLORS_TOOLTIP = Tooltip.create( Component.translatable("loggui.gui.tooltip.use_colors") );
+    private static final Tooltip PARAMETER_TOOLTIP = Tooltip.create( Component.translatable("loggui.gui.tooltip.parameters") );
 
     private final Screen lastScreen;
     private boolean splitTimes;
@@ -44,10 +50,12 @@ public class LogScreen extends Screen {
     public MultiLineEditBox editBox;
     public Checkbox splitTimesBox;
     public Checkbox useColorsBox;
+    public CustomButton settingsButton;
 
     @Override
     protected void init() {
         clearWidgets();
+
         editBox = MultiLineEditBox.builder()
                 .setX( this.width / 2 - (int) (this.width * 0.75) / 2 )
                 .setY(25)
@@ -62,11 +70,11 @@ public class LogScreen extends Screen {
                     this.scroll = -1;
                     init();
                 })
-                .bounds(width / 2 - 50, editBox.getY() + editBox.getHeight() + 10, 100, 20)
+                .bounds(width / 2 - 50, editBox.getY() + editBox.getHeight() + 6, 100, 20)
                 .tooltip(REFRESH_TOOLTIP)
                 .build();
-        closeButton = Button.builder(Component.literal("X"), button -> onClose())
-                .bounds(refreshButton.getX() - 25, refreshButton.getY(), 20, 20)
+        closeButton = Button.builder(CLOSE_MENU, button -> onClose())
+                .bounds(refreshButton.getX(), refreshButton.getY() + 22, 100, 20)
                 .tooltip(CLOSE_MENU_TOOLTIP)
                 .build();
 
@@ -94,12 +102,20 @@ public class LogScreen extends Screen {
                 })
                 .build();
 
+        settingsButton = CustomButton.builder()
+                .size(20, 20).pos(refreshButton.getX() - 25, refreshButton.getY())
+                .sprites("loggui:params_0", "loggui:params_0", "loggui:params_1").onClick(() -> {
+                    this.minecraft.setScreen( new LogScreenSettingsScreen(this) );
+                }).build();
+        settingsButton.setTooltip(PARAMETER_TOOLTIP);
+
         addRenderableWidget( new StringWidget(width / 2 - 50, 5, 100, 20, TITLE, minecraft.fontFilterFishy) );
         addRenderableWidget(closeButton);
         addRenderableWidget(editBox);
         addRenderableWidget(splitTimesBox);
         addRenderableWidget(useColorsBox);
         addRenderableWidget(refreshButton);
+        addRenderableWidget(settingsButton);
     }
 
     private void update() {

@@ -8,5 +8,15 @@
   "loggui.gui.tooltip.refresh": "Оновити відображуваний журнал",
   "loggui.gui.tooltip.split_times": "Розділення елементів для підвищення читабельності",
   "loggui.gui.tooltip.use_colors": "Виділяє попередження та помилки",
-  "loggui.gui.tooltip.options": "Відкрити журнал гри"
+  "loggui.gui.tooltip.options": "Відкрити журнал гри",
+  "loggui.gui.tooltip.parameters": "Відкрити налаштування",
+  "loggui.settings.title": "Налаштування виводу журналів",
+  "loggui.settings.text_shadow": "Тінь тексту",
+  "loggui.settings.color_title": "Колір тексту",
+  "loggui.settings.red": "Червоний",
+  "loggui.settings.green": "Зелений",
+  "loggui.settings.blue": "Синій",
+  "loggui.settings.info_title": "Префікс інформації",
+  "loggui.settings.warn_title": "Префікс попередження",
+  "loggui.settings.err_title": "Префікс помилки"
 }

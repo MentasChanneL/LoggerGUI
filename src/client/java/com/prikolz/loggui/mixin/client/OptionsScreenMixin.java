@@ -1,6 +1,6 @@
 package com.prikolz.loggui.mixin.client;
 
-import com.prikolz.loggui.LogScreen;
+import com.prikolz.loggui.screens.LogScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;

@@ -8,5 +8,15 @@
   "loggui.gui.tooltip.refresh": "Actualiser les journaux de jeu",
   "loggui.gui.tooltip.split_times": "Diviser les journaux pour une meilleure lisibilité",
   "loggui.gui.tooltip.use_colors": "Les avertissements et les erreurs seront mis en évidence",
-  "loggui.gui.tooltip.options": "Ouvrir les journaux de jeu"
+  "loggui.gui.tooltip.options": "Ouvrir les journaux de jeu",
+  "loggui.gui.tooltip.parameters": "Ouvrir les paramètres",
+  "loggui.settings.title": "Paramètres de sortie des journaux",
+  "loggui.settings.text_shadow": "Ombre du texte",
+  "loggui.settings.color_title": "Couleur du texte",
+  "loggui.settings.red": "Rouge",
+  "loggui.settings.green": "Vert",
+  "loggui.settings.blue": "Bleu",
+  "loggui.settings.info_title": "Préfixe d'information",
+  "loggui.settings.warn_title": "Préfixe d'avertissement",
+  "loggui.settings.err_title": "Préfixe d'erreur"
 }

@@ -8,5 +8,15 @@
   "loggui.gui.tooltip.refresh": "Обновить отображаемые логи",
   "loggui.gui.tooltip.split_times": "Разделение элементов для повышения читабельности",
   "loggui.gui.tooltip.use_colors": "Выделяет предупреждения и ошибки",
-  "loggui.gui.tooltip.options": "Открыть логи игры"
+  "loggui.gui.tooltip.options": "Открыть логи игры",
+  "loggui.gui.tooltip.parameters": "Открыть параметры",
+  "loggui.settings.title": "Настройка вывода логов",
+  "loggui.settings.text_shadow": "Тень от текста",
+  "loggui.settings.color_title": "Цвет текста",
+  "loggui.settings.red": "Красный",
+  "loggui.settings.green": "Зелёный",
+  "loggui.settings.blue": "Синий",
+  "loggui.settings.info_title": "Префикс вывода",
+  "loggui.settings.warn_title": "Префикс предупр.",
+  "loggui.settings.err_title": "Префикс ошибки"
 }

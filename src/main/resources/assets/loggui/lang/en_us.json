@@ -8,5 +8,15 @@
   "loggui.gui.tooltip.refresh": "Refresh game logs",
   "loggui.gui.tooltip.split_times": "Split logs to improve readability",
   "loggui.gui.tooltip.use_colors": "Warnings and errors will be highlighted",
-  "loggui.gui.tooltip.options": "Open game logs"
+  "loggui.gui.tooltip.options": "Open game logs",
+  "loggui.gui.tooltip.parameters": "Open settings",
+  "loggui.settings.title": "Logs output settings",
+  "loggui.settings.text_shadow": "Text shadow",
+  "loggui.settings.color_title": "Text color",
+  "loggui.settings.red": "Red",
+  "loggui.settings.green": "Green",
+  "loggui.settings.blue": "Blue",
+  "loggui.settings.info_title": "Info prefix",
+  "loggui.settings.warn_title": "Warn prefix",
+  "loggui.settings.err_title": "Error prefix"
 }

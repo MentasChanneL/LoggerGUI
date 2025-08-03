@@ -2,12 +2,15 @@ package com.prikolz.loggui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.prikolz.loggui.mixin.client.KeyMappingMixin;
+import com.prikolz.loggui.screens.LogScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
+import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
@@ -49,7 +52,9 @@ public class LogGUIClient implements ClientModInitializer {
 						screen instanceof KeyBindsScreen ||
 						screen instanceof LogScreen ||
 						screen instanceof ChatScreen ||
-						screen instanceof LevelLoadingScreen
+						screen instanceof LevelLoadingScreen ||
+						screen instanceof SignEditScreen ||
+						screen instanceof AnvilScreen
 				) return;
 				Minecraft.getInstance().getSoundManager().play(
 						SimpleSoundInstance.forUI(SoundEvents.VILLAGER_WORK_LIBRARIAN, 1.0F)
@@ -77,8 +82,9 @@ public class LogGUIClient implements ClientModInitializer {
 						useColorState = 0;
 					}
 					if (useColorState == 2) {
-						if (c == 'w' || c == 'W') builder.insert(lineIndex + 1, "§e");
-						if (c == 'e' || c == 'E') builder.insert(lineIndex + 1, "§c");
+						if (c == 'w' || c == 'W') builder.insert(lineIndex, Config.WARN_PREFIX);
+						if (c == 'e' || c == 'E') builder.insert(lineIndex, Config.ERR_PREFIX);
+						if (c == 'i' || c == 'I') builder.insert(lineIndex, Config.INFO_PREFIX);
 						useColorState = 3;
 					}
 					if (useColorState == 1 && c == '/') useColorState = 2;
@@ -92,6 +98,7 @@ public class LogGUIClient implements ClientModInitializer {
 					if (splitTimes) timeRequest = true;
 					useColorState = 1;
 					lineIndex = builder.length();
+					if (splitTimes) lineIndex++;
 				}
 			}
 		} catch (Throwable th) {

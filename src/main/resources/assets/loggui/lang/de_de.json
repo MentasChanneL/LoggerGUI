@@ -8,5 +8,15 @@
   "loggui.gui.tooltip.refresh": "Spielprotokolle aktualisieren",
   "loggui.gui.tooltip.split_times": "Protokolle teilen, um die Lesbarkeit zu verbessern",
   "loggui.gui.tooltip.use_colors": "Warnungen und Fehler werden hervorgehoben",
-  "loggui.gui.tooltip.options": "Spielprotokolle öffnen"
+  "loggui.gui.tooltip.options": "Spielprotokolle öffnen",
+  "loggui.gui.tooltip.parameters": "Einstellungen öffnen",
+  "loggui.settings.title": "Einstellungen für die Protokollausgabe",
+  "loggui.settings.text_shadow": "Textschatten",
+  "loggui.settings.color_title": "Textfarbe",
+  "loggui.settings.red": "Rot",
+  "loggui.settings.green": "Grün",
+  "loggui.settings.blue": "Blau",
+  "loggui.settings.info_title": "Info-Präfix",
+  "loggui.settings.warn_title": "Warn-Präfix",
+  "loggui.settings.err_title": "Fehler-Präfix"
 }
