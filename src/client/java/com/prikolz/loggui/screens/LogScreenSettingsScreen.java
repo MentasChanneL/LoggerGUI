@@ -1,12 +1,16 @@
 package com.prikolz.loggui.screens;
 
 import com.prikolz.loggui.Config;
+import com.prikolz.loggui.mixin.client.AbstractWidgetMixin;
 import com.prikolz.loggui.util.ColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +26,7 @@ public class LogScreenSettingsScreen extends Screen {
     private static final Component INFO_TITLE = Component.translatable("loggui.settings.info_title");
     private static final Component WARN_TITLE = Component.translatable("loggui.settings.warn_title");
     private static final Component ERR_TITLE = Component.translatable("loggui.settings.err_title");
+    private static final Component LINES_LIMIT_TITLE = Component.translatable("loggui.settings.lines_limit_title");
 
     private final LogScreen parent;
 
@@ -39,6 +44,7 @@ public class LogScreenSettingsScreen extends Screen {
     public EditBoxHolder infoPrefix;
     public EditBoxHolder warnPrefix;
     public EditBoxHolder errPrefix;
+    public EditBoxHolder linesLimit;
 
     private void updatePreview() {
         preview.hold = MultiLineEditBox.builder()
@@ -71,7 +77,7 @@ public class LogScreenSettingsScreen extends Screen {
                 .pos(5, 20)
                 .build();
 
-        this.addRenderableWidget( new StringWidget(5, 45, 100, 20, COLOR_TITLE, minecraft.fontFilterFishy).alignLeft() );
+        this.addRenderableWidget( new StringWidget(5, 45, 100, 20, COLOR_TITLE, minecraft.fontFilterFishy) );
 
         final int sliderW = 100;
         final int sliderH = 20;
@@ -100,32 +106,47 @@ public class LogScreenSettingsScreen extends Screen {
 
         final int prefixY = blueSlider.getY() + 22;
 
-        this.addRenderableWidget( new StringWidget(5, prefixY, 100, 20, INFO_TITLE, minecraft.fontFilterFishy).alignLeft() );
+        this.addRenderableWidget( new StringWidget(5, prefixY, 100, 20, INFO_TITLE, minecraft.fontFilterFishy) );
         infoPrefix = new EditBoxHolder(5, prefixY + 20, 100, 20);
         infoPrefix.hold.setValue( prefixFormat(Config.INFO_PREFIX) );
         infoPrefix.hold.setMaxLength(128);
-        infoPrefix.change = (e) -> {
+        infoPrefix.change = (e, isEnter) -> {
             Config.INFO_PREFIX = prefixConvert(e.hold.getValue());
             updatePreview();
             Config.save();
         };
 
-        this.addRenderableWidget( new StringWidget(5, prefixY + 40, 100, 20, WARN_TITLE, minecraft.fontFilterFishy).alignLeft() );
+        this.addRenderableWidget( new StringWidget(5, prefixY + 40, 100, 20, WARN_TITLE, minecraft.fontFilterFishy) );
         warnPrefix = new EditBoxHolder(5, prefixY + 60, 100, 20);
         warnPrefix.hold.setValue( prefixFormat(Config.WARN_PREFIX) );
         warnPrefix.hold.setMaxLength(128);
-        warnPrefix.change = (e) -> {
+        warnPrefix.change = (e, isEnter) -> {
             Config.WARN_PREFIX = prefixConvert(e.hold.getValue());
             updatePreview();
             Config.save();
         };
 
-        this.addRenderableWidget( new StringWidget(5, prefixY + 80, 100, 20, ERR_TITLE, minecraft.fontFilterFishy).alignLeft() );
+        this.addRenderableWidget( new StringWidget(5, prefixY + 80, 100, 20, ERR_TITLE, minecraft.fontFilterFishy) );
         errPrefix = new EditBoxHolder(5, prefixY + 100, 100, 20);
         errPrefix.hold.setValue( prefixFormat(Config.ERR_PREFIX) );
         errPrefix.hold.setMaxLength(128);
-        errPrefix.change = (e) -> {
+        errPrefix.change = (e, isEnter) -> {
             Config.ERR_PREFIX = prefixConvert(e.hold.getValue());
+            updatePreview();
+            Config.save();
+        };
+
+        this.addRenderableWidget( new StringWidget(5, prefixY + 120, 100, 20, LINES_LIMIT_TITLE, minecraft.fontFilterFishy) );
+        linesLimit = new EditBoxHolder(5, prefixY + 140, 100, 20);
+        linesLimit.isNumber = true;
+        linesLimit.hold.setValue( Config.LOGGER_LINES_LIMIT + "" );
+        linesLimit.hold.setMaxLength(6);
+        linesLimit.change = (e, isEnter) -> {
+            int lines = -1;
+            try {
+                lines = Integer.parseInt(e.hold.getValue());
+            } catch (Throwable ignore) {}
+            Config.LOGGER_LINES_LIMIT = lines;
             updatePreview();
             Config.save();
         };
@@ -144,6 +165,7 @@ public class LogScreenSettingsScreen extends Screen {
         this.addRenderableWidget(warnPrefix);
         this.addRenderableWidget(errPrefix);
         this.addRenderableWidget(infoPrefix);
+        this.addRenderableWidget(linesLimit);
         this.addRenderableWidget(preview);
     }
 
@@ -169,6 +191,7 @@ public class LogScreenSettingsScreen extends Screen {
     public static class EditBoxHolder extends AbstractWidget {
         public EditBox hold;
         public OnChange change;
+        public boolean isNumber = false;
 
         public EditBoxHolder(int x, int y, int w, int h) {
             super(x, y, w, h, Component.empty());
@@ -186,34 +209,37 @@ public class LogScreenSettingsScreen extends Screen {
         }
 
         @Override
-        public void onClick(double d, double e) {
-            hold.onClick(d, e);
-        }
-
-        @Override
-        public void onRelease(double d, double e) {
-            hold.onRelease(d, e);
-        }
-
-        @Override
-        public boolean keyPressed(int i, int j, int k) {
-            boolean result = hold.keyPressed(i, j, k);
-            if (result && change != null) change.onChange(this);
-            return result;
-        }
-
-        @Override
-        public boolean charTyped(char c, int i) {
-            boolean result = hold.charTyped(c, i);
-            if (result && change != null) change.onChange(this);
-            return result;
-        }
-
-        @Override
         public void setFocused(boolean bl) { hold.setFocused(bl); }
 
+        @Override
+        public boolean charTyped(CharacterEvent event) {
+            if ( isNumber && (event.codepoint() < 48 || event.codepoint() > 57)
+                          && !(event.codepointAsString().equals("-") && hold.getValue().isEmpty())
+            ) return false;
+            boolean result = hold.charTyped(event);
+            this.change.onChange(this, false);
+            return result;
+        }
+
+        @Override
+        public boolean keyPressed(KeyEvent event) {
+            boolean result = hold.keyPressed(event);
+            change.onChange(this, event.isConfirmation());
+            return result;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
+            return hold.mouseClicked(event, bl);
+        }
+
+        @Override
+        protected void onDrag(MouseButtonEvent event, double d, double e) {
+            ((AbstractWidgetMixin) hold).onDrag(event, d, e);
+        }
+
         public interface OnChange {
-            void onChange(EditBoxHolder holder);
+            void onChange(EditBoxHolder holder, boolean isEnter);
         }
     }
 
@@ -237,8 +263,28 @@ public class LogScreenSettingsScreen extends Screen {
         }
 
         @Override
-        public void onRelease(double d, double e) {
-            hold.onRelease(d, e);
+        public void onClick(MouseButtonEvent event, boolean bl) {
+            hold.onClick(event, bl);
+        }
+
+        @Override
+        public void onRelease(MouseButtonEvent event) {
+            hold.onRelease(event);
+        }
+
+        @Override
+        protected void onDrag(MouseButtonEvent event, double d, double e) {
+            ((AbstractWidgetMixin) hold).onDrag(event, d, e);
+        }
+
+        @Override
+        public boolean mouseReleased(MouseButtonEvent event) {
+            return hold.mouseReleased(event);
+        }
+
+        @Override
+        public boolean mouseDragged(MouseButtonEvent event, double d, double e) {
+            return hold.mouseDragged(event, d, e);
         }
     }
 

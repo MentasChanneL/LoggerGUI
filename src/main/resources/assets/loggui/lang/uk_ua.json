@@ -1,6 +1,7 @@
 {
   "key.logger": "§eВідкрити жунрал",
   "loggui.gui.title": "Журнал ігри",
+  "loggui.gui.pause": "Пауза",
   "loggui.gui.refresh": "Оновити",
   "loggui.gui.split_times": "Розділити елементи",
   "loggui.gui.use_colors": "Використовувати кольори",
@@ -18,5 +19,6 @@
   "loggui.settings.blue": "Синій",
   "loggui.settings.info_title": "Префікс інформації",
   "loggui.settings.warn_title": "Префікс попередження",
-  "loggui.settings.err_title": "Префікс помилки"
+  "loggui.settings.err_title": "Префікс помилки",
+  "loggui.settings.lines_limit_title": "Ліміт рядків"
 }

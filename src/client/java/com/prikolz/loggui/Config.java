@@ -10,6 +10,7 @@ import java.io.FileWriter;
 public class Config {
     public static boolean LOGGER_SPLIT_ON_TIMES = false;
     public static boolean LOGGER_USE_COLORS = true;
+    public static int LOGGER_LINES_LIMIT = 100;
     public static int LOGGER_TEXT_COLOR = -1;
     public static boolean LOGGER_TEXT_SHADOW = false;
     public static int KEY_BIND = InputConstants.KEY_GRAVE;
@@ -31,6 +32,7 @@ public class Config {
             LOGGER_TEXT_COLOR = json.get("logger_text_color").getAsInt();
             LOGGER_USE_COLORS = json.get("settings_use_colors").getAsBoolean();
             LOGGER_SPLIT_ON_TIMES = json.get("settings_split_messages").getAsBoolean();
+            LOGGER_LINES_LIMIT = json.get("settings_lines_limit").getAsInt();
             INFO_PREFIX = json.get("logger_info_prefix").getAsString();
             WARN_PREFIX = json.get("logger_warn_prefix").getAsString();
             ERR_PREFIX = json.get("logger_err_prefix").getAsString();
@@ -54,6 +56,7 @@ public class Config {
         json.add("settings_key_bind", new JsonPrimitive(KEY_BIND));
         json.add("settings_use_colors", new JsonPrimitive(LOGGER_USE_COLORS));
         json.add("settings_split_messages", new JsonPrimitive(LOGGER_SPLIT_ON_TIMES));
+        json.add("settings_lines_limit", new JsonPrimitive(LOGGER_LINES_LIMIT));
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(config)) {

@@ -1,6 +1,7 @@
 {
   "key.logger": "§eОткрыть логи",
   "loggui.gui.title": "Логи игры",
+  "loggui.gui.pause": "Пауза",
   "loggui.gui.refresh": "Обновить",
   "loggui.gui.split_times": "Разделить элементы",
   "loggui.gui.use_colors": "Использовать цвета",
@@ -18,5 +19,6 @@
   "loggui.settings.blue": "Синий",
   "loggui.settings.info_title": "Префикс вывода",
   "loggui.settings.warn_title": "Префикс предупр.",
-  "loggui.settings.err_title": "Префикс ошибки"
+  "loggui.settings.err_title": "Префикс ошибки",
+  "loggui.settings.lines_limit_title": "Лимит строк"
 }

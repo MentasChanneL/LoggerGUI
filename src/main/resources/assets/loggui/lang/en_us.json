@@ -1,6 +1,7 @@
 {
   "key.logger": "§eOpen logs",
   "loggui.gui.title": "Game logs",
+  "loggui.gui.pause": "Pause",
   "loggui.gui.refresh": "Refresh",
   "loggui.gui.split_times": "Split logs",
   "loggui.gui.use_colors": "Use colors",
@@ -18,5 +19,6 @@
   "loggui.settings.blue": "Blue",
   "loggui.settings.info_title": "Info prefix",
   "loggui.settings.warn_title": "Warn prefix",
-  "loggui.settings.err_title": "Error prefix"
+  "loggui.settings.err_title": "Error prefix",
+  "loggui.settings.lines_limit_title": "Lines limit"
 }

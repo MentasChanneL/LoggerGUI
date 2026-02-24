@@ -1,6 +1,7 @@
 {
   "key.logger": "§eOuvrir les journaux",
   "loggui.gui.title": "Journaux de jeu",
+  "loggui.gui.pause": "Pause",
   "loggui.gui.refresh": "Actualiser",
   "loggui.gui.split_times": "Diviser les journaux",
   "loggui.gui.use_colors": "Utiliser les couleurs",
@@ -18,5 +19,6 @@
   "loggui.settings.blue": "Bleu",
   "loggui.settings.info_title": "Préfixe d'information",
   "loggui.settings.warn_title": "Préfixe d'avertissement",
-  "loggui.settings.err_title": "Préfixe d'erreur"
+  "loggui.settings.err_title": "Préfixe d'erreur",
+  "loggui.settings.lines_limit_title": "Limite de ligne"
 }

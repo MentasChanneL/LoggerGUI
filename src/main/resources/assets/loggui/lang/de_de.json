@@ -1,6 +1,7 @@
 {
   "key.logger": "§eProtokolle öffnen",
   "loggui.gui.title": "Spielprotokolle",
+  "loggui.gui.pause": "Pause",
   "loggui.gui.refresh": "Aktualisieren",
   "loggui.gui.split_times": "Protokolle teilen",
   "loggui.gui.use_colors": "Farben verwenden",
@@ -18,5 +19,6 @@
   "loggui.settings.blue": "Blau",
   "loggui.settings.info_title": "Info-Präfix",
   "loggui.settings.warn_title": "Warn-Präfix",
-  "loggui.settings.err_title": "Fehler-Präfix"
+  "loggui.settings.err_title": "Fehler-Präfix",
+  "loggui.settings.lines_limit_title": "Zeilenbegrenzung"
 }

@@ -5,11 +5,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
@@ -29,7 +30,7 @@ public class CustomButton extends AbstractWidget {
     }
 
     @Override
-    public void onClick(double d, double e) {
+    public void onClick(MouseButtonEvent event, boolean bl) {
         if (sound != null) Minecraft.getInstance().getSoundManager().play(sound);
         if (onClick != null) onClick.run();
     }
@@ -58,9 +59,9 @@ public class CustomButton extends AbstractWidget {
         private int w = 0;
         private int h = 0;
         private WidgetSprites sprites = new WidgetSprites(
-                ResourceLocation.withDefaultNamespace("widget/button"),
-                ResourceLocation.withDefaultNamespace("widget/button_disabled"),
-                ResourceLocation.withDefaultNamespace("widget/button_highlighted")
+                Identifier.withDefaultNamespace("widget/button"),
+                Identifier.withDefaultNamespace("widget/button_disabled"),
+                Identifier.withDefaultNamespace("widget/button_highlighted")
         );
         private Runnable run = null;
         private Holder.Reference<SoundEvent> soundHolder = SoundEvents.UI_BUTTON_CLICK;
@@ -80,9 +81,9 @@ public class CustomButton extends AbstractWidget {
 
         public Builder sprites(String tex1, String tex2, String tex3) {
             sprites = new WidgetSprites(
-                    ResourceLocation.parse(tex1),
-                    ResourceLocation.parse(tex2),
-                    ResourceLocation.parse(tex3)
+                    Identifier.parse(tex1),
+                    Identifier.parse(tex2),
+                    Identifier.parse(tex3)
             );
             return this;
         }
