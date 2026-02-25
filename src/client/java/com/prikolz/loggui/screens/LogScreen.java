@@ -83,7 +83,7 @@ public class LogScreen extends Screen {
         };
         chatBox.hold.setFocused(true);
 
-        refreshButton = Button.builder(PAUSE, button -> {
+        refreshButton = Button.builder(onPause ? REFRESH : PAUSE, button -> {
                     onPause = !onPause;
                     if (onPause) button.setMessage(REFRESH);
                     else {

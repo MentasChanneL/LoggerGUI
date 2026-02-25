@@ -16,9 +16,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,18 +39,19 @@ public class LogGUIClient implements ClientModInitializer {
 	public static void tick() {
 		var minecraft = Minecraft.getInstance();
 		var screen = minecraft.screen;
-		if (screen instanceof KeyBindsScreen) {
-			saveRequest = true;
-		} else if(saveRequest) {
-			saveRequest = false;
-			Config.KEY_BIND = keyMixin.getKey().getValue();
-			Config.save();
-		}
-		try {
-			if (InputConstants.isKeyDown(
-					minecraft.getWindow(),
-					keyMixin.getKey().getValue())
-			) {
+        try {
+		    if (screen instanceof KeyBindsScreen) {
+		    	saveRequest = true;
+                return;
+		    } else if(saveRequest) {
+		    	saveRequest = false;
+		    	Config.KEY_BIND = keyMixin.getKey().getValue();
+		    	Config.save();
+		    }
+
+            int key = keyMixin.getKey().getValue();
+            if (key <= 0) return;
+			if ( InputConstants.isKeyDown(minecraft.getWindow(), key) ) {
 				if (
 						screen instanceof KeyBindsScreen ||
 						screen instanceof LogScreen ||
