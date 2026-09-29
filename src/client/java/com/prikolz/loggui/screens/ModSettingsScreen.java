@@ -1,10 +1,11 @@
 package com.prikolz.loggui.screens;
 
 import com.prikolz.loggui.Config;
-import com.prikolz.loggui.mixin.client.AbstractWidgetMixin;
+import com.prikolz.loggui.LogDialog;
 import com.prikolz.loggui.util.ColorUtil;
+import com.prikolz.loggui.widget.ColorPicker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -15,8 +16,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-public class LogScreenSettingsScreen extends Screen {
-
+public class ModSettingsScreen extends Screen {
     private static final Component TITLE = Component.translatable("loggui.settings.title");
     private static final Component TEXT_SHADOW = Component.translatable("loggui.settings.text_shadow");
     private static final Component COLOR_TITLE = Component.translatable("loggui.settings.color_title");
@@ -28,9 +28,9 @@ public class LogScreenSettingsScreen extends Screen {
     private static final Component ERR_TITLE = Component.translatable("loggui.settings.err_title");
     private static final Component LINES_LIMIT_TITLE = Component.translatable("loggui.settings.lines_limit_title");
 
-    private final LogScreen parent;
+    private final Screen parent;
 
-    protected LogScreenSettingsScreen(@NotNull LogScreen parent) {
+    public ModSettingsScreen(@NotNull Screen parent) {
         super(TITLE);
         this.parent = parent;
     }
@@ -64,7 +64,7 @@ public class LogScreenSettingsScreen extends Screen {
 
     @Override
     protected void init() {
-        doneButton = Button.builder(CommonComponents.GUI_DONE, b -> Minecraft.getInstance().setScreen(parent))
+        doneButton = Button.builder(CommonComponents.GUI_DONE, b -> Minecraft.getInstance().setScreenAndShow(parent))
                 .bounds(this.width / 2 - 100, this.height - 40, 200, 20)
                 .build();
         useShadow = Checkbox.builder(TEXT_SHADOW, Minecraft.getInstance().fontFilterFishy)
@@ -167,6 +167,17 @@ public class LogScreenSettingsScreen extends Screen {
         this.addRenderableWidget(infoPrefix);
         this.addRenderableWidget(linesLimit);
         this.addRenderableWidget(preview);
+        this.addRenderableWidget(new ColorPicker(
+                100,
+                100,
+                80,
+                80,
+                Component.empty(),
+                0xFF224411,
+                (color) -> {
+                    LogDialog.LOGGER.info("Color " + color);
+                }
+        ));
     }
 
     private String prefixFormat(String prefix) {
@@ -196,11 +207,6 @@ public class LogScreenSettingsScreen extends Screen {
         public EditBoxHolder(int x, int y, int w, int h) {
             super(x, y, w, h, Component.empty());
             hold = new EditBox(Minecraft.getInstance().fontFilterFishy, x, y, w, h, Component.empty());
-        }
-
-        @Override
-        protected void renderWidget(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
-            hold.renderWidget(guiGraphics, i, j, f);
         }
 
         @Override
@@ -234,8 +240,13 @@ public class LogScreenSettingsScreen extends Screen {
         }
 
         @Override
+        protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+            hold.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+        }
+
+        @Override
         protected void onDrag(MouseButtonEvent event, double d, double e) {
-            ((AbstractWidgetMixin) hold).onDrag(event, d, e);
+
         }
 
         public interface OnChange {
@@ -253,8 +264,8 @@ public class LogScreenSettingsScreen extends Screen {
         }
 
         @Override
-        protected void renderWidget(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
-            hold.renderWidget(guiGraphics, i, j, f);
+        protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+            hold.extractWidgetRenderState(graphics, mouseX, mouseY, a);
         }
 
         @Override
@@ -274,7 +285,7 @@ public class LogScreenSettingsScreen extends Screen {
 
         @Override
         protected void onDrag(MouseButtonEvent event, double d, double e) {
-            ((AbstractWidgetMixin) hold).onDrag(event, d, e);
+
         }
 
         @Override
@@ -289,7 +300,6 @@ public class LogScreenSettingsScreen extends Screen {
     }
 
     public static class IntSlider extends AbstractSliderButton {
-
         private final OnChange onChange;
         private final int min;
         private final int max;

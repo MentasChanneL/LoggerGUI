@@ -14,6 +14,8 @@ import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -21,7 +23,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogGUIClient implements ClientModInitializer {
+public class LogDialog implements ClientModInitializer {
+    public static String MOD_ID = "log_dialog";
+    public static Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final KeyMapping keyConsole = new KeyMapping("key.logger", Config.KEY_BIND, KeyMapping.Category.MISC);
 	public static final KeyMappingMixin keyMixin = (KeyMappingMixin) keyConsole;
@@ -30,20 +34,20 @@ public class LogGUIClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		Config.read();
-		keyConsole.setKey( InputConstants.Type.KEYSYM.getOrCreate(Config.KEY_BIND) );
-		LogGUI.LOGGER.info("initialized");
+		keyConsole.setKey( InputConstants.Type.KEYBOARD.getOrCreate(Config.KEY_BIND) );
+        LOGGER.info("initialized");
 	}
 
 	private static boolean saveRequest = false;
 
 	public static void tick() {
 		var minecraft = Minecraft.getInstance();
-		var screen = minecraft.screen;
+		var screen = minecraft.gui.screen();
         try {
 		    if (screen instanceof KeyBindsScreen) {
 		    	saveRequest = true;
                 return;
-		    } else if(saveRequest) {
+		    } else if (saveRequest) {
 		    	saveRequest = false;
 		    	Config.KEY_BIND = keyMixin.getKey().getValue();
 		    	Config.save();
@@ -51,7 +55,7 @@ public class LogGUIClient implements ClientModInitializer {
 
             int key = keyMixin.getKey().getValue();
             if (key <= 0) return;
-			if ( InputConstants.isKeyDown(minecraft.getWindow(), key) ) {
+			if ( InputConstants.isKeyDown(key) ) {
 				if (
 						screen instanceof KeyBindsScreen ||
 						screen instanceof LogScreen ||
@@ -63,7 +67,7 @@ public class LogGUIClient implements ClientModInitializer {
 				Minecraft.getInstance().getSoundManager().play(
 						SimpleSoundInstance.forUI(SoundEvents.VILLAGER_WORK_LIBRARIAN, 1.0F)
 				);
-				minecraft.setScreen( new LogScreen() );
+				minecraft.setScreenAndShow( new LogScreen() );
 			}
 		} catch (Throwable ignore) {}
 	}

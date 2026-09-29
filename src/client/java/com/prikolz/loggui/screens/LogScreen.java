@@ -1,17 +1,15 @@
 package com.prikolz.loggui.screens;
 
 import com.prikolz.loggui.Config;
-import com.prikolz.loggui.LogGUIClient;
+import com.prikolz.loggui.LogDialog;
 import com.prikolz.loggui.widget.CustomButton;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 public class LogScreen extends Screen {
-
     private static final Component TITLE = Component.translatable("loggui.gui.title");
     private static final Component REFRESH = Component.translatable("loggui.gui.refresh");
     private static final Component PAUSE = Component.translatable("loggui.gui.pause");
@@ -23,7 +21,8 @@ public class LogScreen extends Screen {
     private static final Tooltip CLOSE_MENU_TOOLTIP = Tooltip.create(Component.translatable("loggui.gui.tooltip.close"));
     private static final Tooltip REFRESH_TOOLTIP = Tooltip.create(Component.translatable("loggui.gui.tooltip.refresh"));
     private static final Tooltip SPLIT_TIMES_TOOLTIP = Tooltip.create(
-            Component.translatable("loggui.gui.tooltip.split_times"));
+            Component.translatable("loggui.gui.tooltip.split_times")
+    );
     private static final Tooltip USE_COLORS_TOOLTIP = Tooltip.create(Component.translatable("loggui.gui.tooltip.use_colors"));
     private static final Tooltip PARAMETER_TOOLTIP = Tooltip.create(Component.translatable("loggui.gui.tooltip.parameters"));
 
@@ -40,7 +39,7 @@ public class LogScreen extends Screen {
     }
 
     public LogScreen() {
-        this(Config.LOGGER_SPLIT_ON_TIMES, Config.LOGGER_USE_COLORS, Minecraft.getInstance().screen);
+        this(Config.LOGGER_SPLIT_ON_TIMES, Config.LOGGER_USE_COLORS, Minecraft.getInstance().gui.screen());
     }
 
     public LogScreen(Screen last) {
@@ -50,7 +49,7 @@ public class LogScreen extends Screen {
     public Button closeButton;
     public Button refreshButton;
     public MultiLineEditBox editBox = null;
-    public LogScreenSettingsScreen.EditBoxHolder chatBox;
+    public ModSettingsScreen.EditBoxHolder chatBox;
     public Checkbox splitTimesBox;
     public Checkbox useColorsBox;
     public CustomButton settingsButton;
@@ -69,7 +68,7 @@ public class LogScreen extends Screen {
                 .build(minecraft.fontFilterFishy, (int) (this.width * 0.75), (int) (this.height * 0.65), EDIT_BOX);
         editBox.setLineLimit(Integer.MAX_VALUE);
 
-        chatBox = new LogScreenSettingsScreen.EditBoxHolder(editBox.getX() + 2, editBox.getY() + editBox.getHeight() + 2, editBox.getWidth() - 2, 10);
+        chatBox = new ModSettingsScreen.EditBoxHolder(editBox.getX() + 2, editBox.getY() + editBox.getHeight() + 2, editBox.getWidth() - 2, 10);
         chatBox.hold.setBordered(false);
         chatBox.hold.setValue("/");
         chatBox.hold.setMaxLength(256);
@@ -124,8 +123,8 @@ public class LogScreen extends Screen {
 
         settingsButton = CustomButton.builder()
                 .size(20, 20).pos(refreshButton.getX() - 25, refreshButton.getY())
-                .sprites("loggui:params_0", "loggui:params_0", "loggui:params_1").onClick(() -> {
-                    this.minecraft.setScreen(new LogScreenSettingsScreen(this));
+                .sprites("log_dialog:params_0", "log_dialog:params_0", "log_dialog:params_1").onClick(() -> {
+                    this.minecraft.setScreenAndShow(new ModSettingsScreen(this));
                 }).build();
         settingsButton.setTooltip(PARAMETER_TOOLTIP);
 
@@ -146,7 +145,7 @@ public class LogScreen extends Screen {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.lastScreen);
+        this.minecraft.setScreenAndShow(this.lastScreen);
     }
 
     @Override
@@ -154,12 +153,14 @@ public class LogScreen extends Screen {
         if (lastScreen == null) return false;
         return lastScreen.isPauseScreen();
     }
-
+/*
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         guiGraphics.fill(chatBox.hold.getX() - 2, chatBox.hold.getY() - 1, chatBox.hold.getX() + chatBox.hold.getWidth() + 5, chatBox.hold.getY() + chatBox.hold.getHeight() - 1, this.minecraft.options.getBackgroundColor(Integer.MIN_VALUE));
         super.render(guiGraphics, i, j, f);
     }
+
+ */
 
     @Override
     public void tick() {
@@ -167,7 +168,7 @@ public class LogScreen extends Screen {
             updateCD = 20;
             double scroll = editBox.scrollAmount();
             if (editBox.getValue().isEmpty()) scroll = -1;
-            editBox.setValue(LogGUIClient.readLogs(this.splitTimes, this.useColors, Config.LOGGER_LINES_LIMIT));
+            editBox.setValue(LogDialog.readLogs(this.splitTimes, this.useColors, Config.LOGGER_LINES_LIMIT));
             editBox.setScrollAmount(scroll < 0 ? editBox.maxScrollAmount() : scroll);
         }
     }

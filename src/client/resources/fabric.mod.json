@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
-	"id": "loggui",
-	"version": "${version}",
+	"id": "log_dialog",
+	"version": "2.0.0",
 	"name": "Log Dialog",
 	"description": "Viewing logs in the game. Default key bind ` and ~.",
 	"environment": "client",
@@ -14,15 +14,14 @@
 	"license": "MIT",
 	"icon": "assets/loggui/icon.png",
 	"entrypoints": {
-		"main": [
-			"com.prikolz.loggui.LogGUI"
-		],
 		"client": [
-			"com.prikolz.loggui.LogGUIClient"
+			"com.prikolz.loggui.LogDialog"
+		],
+		"modmenu": [
+			"com.prikolz.loggui.integration.ModMenu"
 		]
 	},
 	"mixins": [
-		"loggui.mixins.json",
 		{
 			"config": "loggui.client.mixins.json",
 			"environment": "client"

@@ -1,7 +1,7 @@
 package com.prikolz.loggui.widget;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -17,7 +17,6 @@ import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomButton extends AbstractWidget {
-
     public WidgetSprites sprites;
     public Runnable onClick;
     public SimpleSoundInstance sound;
@@ -36,8 +35,8 @@ public class CustomButton extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
-        guiGraphics.blitSprite(
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        graphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 sprites.get(this.active, this.isHoveredOrFocused()),
                 this.getX(),

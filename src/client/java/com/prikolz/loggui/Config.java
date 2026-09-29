@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 
+import static com.prikolz.loggui.LogDialog.LOGGER;
+
 public class Config {
     public static boolean LOGGER_SPLIT_ON_TIMES = false;
     public static boolean LOGGER_USE_COLORS = true;
@@ -19,9 +21,9 @@ public class Config {
     public static String ERR_PREFIX = "§c";
 
     public static void read() {
-        File config = new File(LogGUIClient.rootFolder, "config/loggui/config.json");
+        File config = new File(LogDialog.rootFolder, "config/loggui/config.json");
         if (!config.isFile()) {
-            LogGUI.LOGGER.info("Created default file settings");
+            LOGGER.info("Created default file settings");
             save();
             return;
         }
@@ -37,16 +39,16 @@ public class Config {
             WARN_PREFIX = json.get("logger_warn_prefix").getAsString();
             ERR_PREFIX = json.get("logger_err_prefix").getAsString();
         }catch (Throwable t) {
-            LogGUI.LOGGER.error("Fail to read settings file: " + t.getMessage());
+            LOGGER.error("Fail to read settings file: " + t.getMessage());
             save();
         }
     }
 
     public static void save() {
         try {
-            new File(LogGUIClient.rootFolder, "config/loggui/").mkdirs();
+            new File(LogDialog.rootFolder, "config/loggui/").mkdirs();
         } catch (Throwable ignore) {}
-        File config = new File(LogGUIClient.rootFolder, "config/loggui/config.json");
+        File config = new File(LogDialog.rootFolder, "config/loggui/config.json");
         JsonObject json = new JsonObject();
         json.add("logger_text_color", new JsonPrimitive(LOGGER_TEXT_COLOR));
         json.add("logger_text_shadow", new JsonPrimitive(LOGGER_TEXT_SHADOW));
@@ -62,7 +64,7 @@ public class Config {
         try (FileWriter writer = new FileWriter(config)) {
             gson.toJson(json, writer);
         } catch (Throwable t) {
-            LogGUI.LOGGER.error("Fail to save settings: " + t.getMessage());
+            LOGGER.error("Fail to save settings: " + t.getMessage());
         }
     }
 }

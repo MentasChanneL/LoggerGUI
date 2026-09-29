@@ -1,6 +1,6 @@
 package com.prikolz.loggui.mixin.client;
 
-import com.prikolz.loggui.LogGUIClient;
+import com.prikolz.loggui.LogDialog;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -16,7 +16,6 @@ import java.io.File;
 
 @Mixin(Options.class)
 public class OptionsMixin {
-
 	@Final
     @Mutable
 	@Shadow
@@ -24,6 +23,6 @@ public class OptionsMixin {
 
 	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/client/Minecraft;Ljava/io/File;)V")
 	private void init(Minecraft minecraft, File file, CallbackInfo info) {
-		keyMappings = ArrayUtils.addAll(keyMappings, LogGUIClient.keyConsole);
+		keyMappings = ArrayUtils.addAll(keyMappings, LogDialog.keyConsole);
 	}
 }
