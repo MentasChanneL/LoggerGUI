@@ -17,11 +17,11 @@ public class ColorUtil {
         return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
     }
 
-    public static int[] toRGBA(int rgba) {
-        int e1 = (rgba >> 24) & 0xFF;
-        int e2 = (rgba >> 16) & 0xFF;
-        int e3 = (rgba >> 8) & 0xFF;
-        int e4 = rgba & 0xFF;
+    public static int[] toRGBA(int argb) {
+        int e1 = (argb >> 24) & 0xFF;
+        int e2 = (argb >> 16) & 0xFF;
+        int e3 = (argb >> 8) & 0xFF;
+        int e4 = argb & 0xFF;
         return new int[]{e2, e3, e4, e1};
     }
 
@@ -92,5 +92,10 @@ public class ColorUtil {
         float saturation = (max == 0f) ? 0f : delta / max;
 
         return new float[] { hue, saturation, max };
+    }
+
+    public static String toHex(int argb, boolean includeAlpha) {
+        if (includeAlpha) return String.format("#%08X", argb);
+        return String.format("#%06X", argb & 0xFFFFFF);
     }
 }

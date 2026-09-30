@@ -3,7 +3,7 @@ package com.prikolz.loggui.screens;
 import com.prikolz.loggui.Config;
 import com.prikolz.loggui.LogDialog;
 import com.prikolz.loggui.util.ColorUtil;
-import com.prikolz.loggui.widget.ColorPicker;
+import com.prikolz.loggui.widget.ColorPickerButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
@@ -16,7 +16,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-public class ModSettingsScreen extends Screen {
+import java.util.concurrent.atomic.AtomicReference;
+
+public class ModSettingsScreen extends LogDialogScreen {
     private static final Component TITLE = Component.translatable("loggui.settings.title");
     private static final Component TEXT_SHADOW = Component.translatable("loggui.settings.text_shadow");
     private static final Component COLOR_TITLE = Component.translatable("loggui.settings.color_title");
@@ -37,9 +39,8 @@ public class ModSettingsScreen extends Screen {
 
     public Button doneButton;
     public Checkbox useShadow;
-    public IntSlider redSlider;
-    public IntSlider greenSlider;
-    public IntSlider blueSlider;
+    public EditBoxHolder textColorField;
+    public ColorPickerButton textColorPalette;
     public MultiLineEditBoxHolder preview;
     public EditBoxHolder infoPrefix;
     public EditBoxHolder warnPrefix;
@@ -79,32 +80,33 @@ public class ModSettingsScreen extends Screen {
 
         this.addRenderableWidget( new StringWidget(5, 45, 100, 20, COLOR_TITLE, minecraft.fontFilterFishy) );
 
-        final int sliderW = 100;
-        final int sliderH = 20;
-        final int sliderY = 60;
-        final int sliderOffset = 5;
+        String hex = ColorUtil.toHex(Config.LOGGER_TEXT_COLOR, false);
+        textColorField = new EditBoxHolder(5, 70, 60, 20);
+        textColorField.hold.setValue(hex);
+        textColorField.hold.setMaxLength(7);
+        AtomicReference<String> lastValue = new AtomicReference<>(hex);
+        textColorField.change = (e, isEnter) -> {
+            if (!isEnter) return;
+            try {
+                int argb = Integer.parseInt(hex.substring(1), 16);
+                lastValue.set(e.hold.getValue());
+                LogDialog.LOGGER.info("new color {}", argb);
+            } catch (Exception er) { e.hold.setValue(lastValue.get()); }
+        };
 
-        int[] rgba = ColorUtil.toRGBA(Config.LOGGER_TEXT_COLOR);
+        textColorPalette = colorPicker(
+                Config.LOGGER_TEXT_COLOR,
+                textColorField.getX() + textColorField.getWidth(),
+                textColorField.getY(),
+                (color) -> {
+                    Config.LOGGER_TEXT_COLOR = color;
+                    textColorField.hold.setValue(ColorUtil.toHex(color, false));
+                    updatePreview();
+                }
+        );
 
-        redSlider = new IntSlider(5, sliderY, sliderW, sliderH, 0, 255, rgba[0], (s, i) -> {
-            s.setMessage( RED.copy().append(": " + i) );
-            changeTextColor();
-        });
-        redSlider.setMessage( RED.copy().append(": " + redSlider.intValue()) );
 
-        greenSlider = new IntSlider(5, sliderY + sliderH + sliderOffset, sliderW, sliderH, 0, 255, rgba[1], (s, i) -> {
-            s.setMessage( GREEN.copy().append(": " + i) );
-            changeTextColor();
-        });
-        greenSlider.setMessage( GREEN.copy().append(": " + greenSlider.intValue()) );
-
-        blueSlider = new IntSlider(5, sliderY + (sliderH + sliderOffset) * 2, sliderW, sliderH, 0, 255, rgba[2], (s, i) -> {
-            s.setMessage( BLUE.copy().append(": " + i) );
-            changeTextColor();
-        });
-        blueSlider.setMessage( BLUE.copy().append(": " + blueSlider.intValue()) );
-
-        final int prefixY = blueSlider.getY() + 22;
+        final int prefixY = textColorField.getY() + 22;
 
         this.addRenderableWidget( new StringWidget(5, prefixY, 100, 20, INFO_TITLE, minecraft.fontFilterFishy) );
         infoPrefix = new EditBoxHolder(5, prefixY + 20, 100, 20);
@@ -113,7 +115,6 @@ public class ModSettingsScreen extends Screen {
         infoPrefix.change = (e, isEnter) -> {
             Config.INFO_PREFIX = prefixConvert(e.hold.getValue());
             updatePreview();
-            Config.save();
         };
 
         this.addRenderableWidget( new StringWidget(5, prefixY + 40, 100, 20, WARN_TITLE, minecraft.fontFilterFishy) );
@@ -123,7 +124,6 @@ public class ModSettingsScreen extends Screen {
         warnPrefix.change = (e, isEnter) -> {
             Config.WARN_PREFIX = prefixConvert(e.hold.getValue());
             updatePreview();
-            Config.save();
         };
 
         this.addRenderableWidget( new StringWidget(5, prefixY + 80, 100, 20, ERR_TITLE, minecraft.fontFilterFishy) );
@@ -133,7 +133,6 @@ public class ModSettingsScreen extends Screen {
         errPrefix.change = (e, isEnter) -> {
             Config.ERR_PREFIX = prefixConvert(e.hold.getValue());
             updatePreview();
-            Config.save();
         };
 
         this.addRenderableWidget( new StringWidget(5, prefixY + 120, 100, 20, LINES_LIMIT_TITLE, minecraft.fontFilterFishy) );
@@ -148,7 +147,6 @@ public class ModSettingsScreen extends Screen {
             } catch (Throwable ignore) {}
             Config.LOGGER_LINES_LIMIT = lines;
             updatePreview();
-            Config.save();
         };
 
         preview = new MultiLineEditBoxHolder( new MultiLineEditBox.Builder().build(
@@ -159,25 +157,13 @@ public class ModSettingsScreen extends Screen {
         addRenderableWidget( new StringWidget(width / 2 - 100, 5, 200, 20, TITLE, minecraft.fontFilterFishy) );
         this.addRenderableWidget(doneButton);
         this.addRenderableWidget(useShadow);
-        this.addRenderableWidget(redSlider);
-        this.addRenderableWidget(greenSlider);
-        this.addRenderableWidget(blueSlider);
+        this.addRenderableWidget(textColorField);
+        this.addRenderableWidget(textColorPalette);
         this.addRenderableWidget(warnPrefix);
         this.addRenderableWidget(errPrefix);
         this.addRenderableWidget(infoPrefix);
         this.addRenderableWidget(linesLimit);
         this.addRenderableWidget(preview);
-        this.addRenderableWidget(new ColorPicker(
-                100,
-                100,
-                80,
-                80,
-                Component.empty(),
-                0xFF224411,
-                (color) -> {
-                    LogDialog.LOGGER.info("Color " + color);
-                }
-        ));
     }
 
     private String prefixFormat(String prefix) {
@@ -188,15 +174,14 @@ public class ModSettingsScreen extends Screen {
         return prefix.replaceAll("&", "§").replaceAll("\\\\n", "\n");
     }
 
-    private void changeTextColor() {
-        Config.LOGGER_TEXT_COLOR = ColorUtil.fromRGBA( redSlider.intValue(), greenSlider.intValue(), blueSlider.intValue(), 255 );
-        updatePreview();
-        Config.save();
-    }
-
     @Override
     public boolean isPauseScreen() {
         return parent.isPauseScreen();
+    }
+
+    @Override
+    public void onClose() {
+        Config.save();
     }
 
     public static class EditBoxHolder extends AbstractWidget {

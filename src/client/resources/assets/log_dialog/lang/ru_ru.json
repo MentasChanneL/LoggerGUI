@@ -1,5 +1,5 @@
 {
-  "key.logger": "§eОткрыть логи",
+  "key.logger": "§bОткрыть логи",
   "loggui.gui.title": "Логи игры",
   "loggui.gui.pause": "Пауза",
   "loggui.gui.refresh": "Обновить",
@@ -20,5 +20,7 @@
   "loggui.settings.info_title": "Префикс вывода",
   "loggui.settings.warn_title": "Префикс предупр.",
   "loggui.settings.err_title": "Префикс ошибки",
-  "loggui.settings.lines_limit_title": "Лимит строк"
+  "loggui.settings.lines_limit_title": "Лимит строк",
+  "log_dialog.settings.color_picker.tooltip.open": "Открыть палитру",
+  "log_dialog.settings.color_picker.tooltip.close": "Закрыть палитру"
 }

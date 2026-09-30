@@ -1,5 +1,5 @@
 {
-  "key.logger": "§eOuvrir les journaux",
+  "key.logger": "§bOuvrir les journaux",
   "loggui.gui.title": "Journaux de jeu",
   "loggui.gui.pause": "Pause",
   "loggui.gui.refresh": "Actualiser",

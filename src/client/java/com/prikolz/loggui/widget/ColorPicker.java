@@ -1,16 +1,13 @@
 package com.prikolz.loggui.widget;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.prikolz.loggui.LogDialog;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.prikolz.loggui.util.ColorUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -20,6 +17,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static com.prikolz.loggui.LogDialog.MOD_ID;
@@ -52,9 +50,7 @@ public class ColorPicker extends AbstractWidget {
     ) {
         super(Math.max(x, 4), Math.max(y, 4), width, height, message);
         this.onPick = onPick;
-        float hue = ColorUtil.getHue(initColor);
-        this.palette = new HSVPalette((int) (width * 0.75), (int) (height * 0.84375), hue);
-        this.color = new ColorState(initColor);
+        setColor(initColor);
     }
 
     public int[] getPaletteBox() {
@@ -131,13 +127,39 @@ public class ColorPicker extends AbstractWidget {
                 sliderH,
                 ColorUtil.hsvToRgb(color.hue, 1f, 1f)
         );
+        boolean insidePalette = isInside(paletteBox, mouseX, mouseY);
+        boolean insideSlider = isInside(sliderBox, mouseX, mouseY);
+        if (insidePalette || (mouseIsDown && (clickedInSlider || clickedInPalette))) {
+            graphics.setTooltipForNextFrame(
+                    Minecraft.getInstance().font,
+                    color.tooltip,
+                    Optional.empty(),
+                    mouseX,
+                    mouseY
+            );
+        }
+        if (insideSlider || (clickedInSlider && mouseIsDown))
+            graphics.requestCursor(CursorTypes.RESIZE_NS);
+    }
+
+    public void setHue(float hue) {
+        color.hue = Math.clamp(hue, 0f, 1f);
+        palette.update(color.hue);
+        color.color = palette.texture.getPixels().getPixel(color.cursorX, color.cursorY);
+        color.update(false);
+    }
+
+    public void setColor(int color) {
+        float hue = ColorUtil.getHue(color);
+        this.palette = new HSVPalette((int) (width * 0.75), (int) (height * 0.84375), hue);
+        this.color = new ColorState(color);
     }
 
     public void onClick(double x, double y) {
         if (clickedInPalette) {
             var box = getPaletteBox();
             var pos = posInBox(box, (int) x, (int) y);
-            color.color = palette.texture.getPixels().getPixel(pos[0], pos[1]);
+            color.color = palette.getPixel(pos[0], pos[1]);
             color.cursorX = pos[0];
             color.cursorY = pos[1];
             color.update(false);
@@ -148,10 +170,7 @@ public class ColorPicker extends AbstractWidget {
             var box = getSliderBox();
             var pos = posInBox(box, (int) x, (int) y);
             var height = box[3] - box[1];
-            color.hue = (float) pos[1] / height;
-            palette.update(color.hue);
-            color.color = palette.texture.getPixels().getPixel(color.cursorX, color.cursorY);
-            color.update(false);
+            setHue((float) pos[1] / height);
             onPick.accept(color.color);
         }
     }
@@ -182,10 +201,19 @@ public class ColorPicker extends AbstractWidget {
     }
 
     @Override
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+        var add = (float) scrollY * -0.05f;
+        setHue(color.hue + add);
+        onPick.accept(color.color);
+        return super.mouseScrolled(x, y, scrollX, scrollY);
+    }
+
+    @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {}
 
     public class ColorState {
         public int color;
+        public List<Component> tooltip;
         public float hue;
         public int cursorX;
         public int cursorY;
@@ -201,13 +229,24 @@ public class ColorPicker extends AbstractWidget {
                 cursorX = (int) ((palette.width - 1) * rPos[0]);
                 cursorY = (int) ((palette.height - 1) * rPos[1]);
             }
-            setTooltip(Tooltip.create(
-                    Component.literal("\n\na").setStyle(
-                            Style.EMPTY
-                                    .withColor(color)
-                                    .withFont(new FontDescription.Resource(Identifier.fromNamespaceAndPath(MOD_ID, "gui")))
+            var hex = ColorUtil.toHex(color, false);
+            var rgba = ColorUtil.toRGBA(color);
+            var style = Style.EMPTY
+                    .withColor(color)
+                    .withFont(new FontDescription.Resource(
+                            Identifier.fromNamespaceAndPath(MOD_ID, "gui")
+                    ));
+            tooltip = List.of(
+                    Component.literal(hex),
+                    Component.literal("        R:" + rgba[0]),
+                    Component.literal("        G:" + rgba[1]),
+                    Component.literal("a.").setStyle(style).append(
+                            Component.literal("  B:" + rgba[2]).setStyle(
+                                    Style.EMPTY.withFont(FontDescription.DEFAULT)
+                                            .withColor(ChatFormatting.WHITE)
+                            )
                     )
-            ));
+            );
         }
     }
 
@@ -238,9 +277,9 @@ public class ColorPicker extends AbstractWidget {
 
         public void generate(NativeImage image, float hue) {
             for (int y = 0; y < height; y++) {
-                var rY = y / (float) height;
+                var rY = y / (float) (height - 1);
                 for (int x = 0; x < width; x++) {
-                    var rX = x / (float) width;
+                    var rX = x / (float) (width - 1);
                     image.setPixel(x, y, putPixel(rX, rY, hue));
                 }
             }
@@ -249,6 +288,10 @@ public class ColorPicker extends AbstractWidget {
         public abstract int putPixel(float x, float y, float hue);
 
         public abstract float[] pickPixel(int argb, float hue);
+
+        public int getPixel(int x, int y) {
+            return texture.getPixels().getPixel(x, y);
+        }
     }
 
     public static class HSVPalette extends Palette {

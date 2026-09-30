@@ -1,5 +1,5 @@
 {
-  "key.logger": "§eOpen logs",
+  "key.logger": "§bOpen logs",
   "loggui.gui.title": "Game logs",
   "loggui.gui.pause": "Pause",
   "loggui.gui.refresh": "Refresh",
