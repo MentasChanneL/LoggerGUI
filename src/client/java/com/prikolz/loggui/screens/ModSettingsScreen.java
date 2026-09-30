@@ -22,9 +22,6 @@ public class ModSettingsScreen extends LogDialogScreen {
     private static final Component TITLE = Component.translatable("loggui.settings.title");
     private static final Component TEXT_SHADOW = Component.translatable("loggui.settings.text_shadow");
     private static final Component COLOR_TITLE = Component.translatable("loggui.settings.color_title");
-    private static final Component RED = Component.translatable("loggui.settings.red");
-    private static final Component GREEN = Component.translatable("loggui.settings.green");
-    private static final Component BLUE = Component.translatable("loggui.settings.blue");
     private static final Component INFO_TITLE = Component.translatable("loggui.settings.info_title");
     private static final Component WARN_TITLE = Component.translatable("loggui.settings.warn_title");
     private static final Component ERR_TITLE = Component.translatable("loggui.settings.err_title");
@@ -39,8 +36,7 @@ public class ModSettingsScreen extends LogDialogScreen {
 
     public Button doneButton;
     public Checkbox useShadow;
-    public EditBoxHolder textColorField;
-    public ColorPickerButton textColorPalette;
+    public ColorSelector textColor;
     public MultiLineEditBoxHolder preview;
     public EditBoxHolder infoPrefix;
     public EditBoxHolder warnPrefix;
@@ -65,9 +61,10 @@ public class ModSettingsScreen extends LogDialogScreen {
 
     @Override
     protected void init() {
-        doneButton = Button.builder(CommonComponents.GUI_DONE, b -> Minecraft.getInstance().setScreenAndShow(parent))
-                .bounds(this.width / 2 - 100, this.height - 40, 200, 20)
-                .build();
+        doneButton = Button.builder(CommonComponents.GUI_DONE, b -> {
+                    Config.save();
+                    Minecraft.getInstance().setScreenAndShow(parent);
+        }).bounds(this.width / 2 - 100, this.height - 40, 200, 20).build();
         useShadow = Checkbox.builder(TEXT_SHADOW, Minecraft.getInstance().fontFilterFishy)
                 .onValueChange((ch, bl) -> {
                     Config.LOGGER_TEXT_SHADOW = bl;
@@ -80,33 +77,16 @@ public class ModSettingsScreen extends LogDialogScreen {
 
         this.addRenderableWidget( new StringWidget(5, 45, 100, 20, COLOR_TITLE, minecraft.fontFilterFishy) );
 
-        String hex = ColorUtil.toHex(Config.LOGGER_TEXT_COLOR, false);
-        textColorField = new EditBoxHolder(5, 70, 60, 20);
-        textColorField.hold.setValue(hex);
-        textColorField.hold.setMaxLength(7);
-        AtomicReference<String> lastValue = new AtomicReference<>(hex);
-        textColorField.change = (e, isEnter) -> {
-            if (!isEnter) return;
-            try {
-                int argb = Integer.parseInt(hex.substring(1), 16);
-                lastValue.set(e.hold.getValue());
-                LogDialog.LOGGER.info("new color {}", argb);
-            } catch (Exception er) { e.hold.setValue(lastValue.get()); }
-        };
-
-        textColorPalette = colorPicker(
+        textColor = colorSelector(
                 Config.LOGGER_TEXT_COLOR,
-                textColorField.getX() + textColorField.getWidth(),
-                textColorField.getY(),
+                5,
+                65,
                 (color) -> {
                     Config.LOGGER_TEXT_COLOR = color;
-                    textColorField.hold.setValue(ColorUtil.toHex(color, false));
                     updatePreview();
                 }
         );
-
-
-        final int prefixY = textColorField.getY() + 22;
+        final int prefixY = textColor.field.getY() + 22;
 
         this.addRenderableWidget( new StringWidget(5, prefixY, 100, 20, INFO_TITLE, minecraft.fontFilterFishy) );
         infoPrefix = new EditBoxHolder(5, prefixY + 20, 100, 20);
@@ -156,9 +136,8 @@ public class ModSettingsScreen extends LogDialogScreen {
 
         addRenderableWidget( new StringWidget(width / 2 - 100, 5, 200, 20, TITLE, minecraft.fontFilterFishy) );
         this.addRenderableWidget(doneButton);
+        textColor.addOnScreen();
         this.addRenderableWidget(useShadow);
-        this.addRenderableWidget(textColorField);
-        this.addRenderableWidget(textColorPalette);
         this.addRenderableWidget(warnPrefix);
         this.addRenderableWidget(errPrefix);
         this.addRenderableWidget(infoPrefix);
@@ -184,63 +163,9 @@ public class ModSettingsScreen extends LogDialogScreen {
         Config.save();
     }
 
-    public static class EditBoxHolder extends AbstractWidget {
-        public EditBox hold;
-        public OnChange change;
-        public boolean isNumber = false;
 
-        public EditBoxHolder(int x, int y, int w, int h) {
-            super(x, y, w, h, Component.empty());
-            hold = new EditBox(Minecraft.getInstance().fontFilterFishy, x, y, w, h, Component.empty());
-        }
-
-        @Override
-        protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
-            hold.updateWidgetNarration(narrationElementOutput);
-        }
-
-        @Override
-        public void setFocused(boolean bl) { hold.setFocused(bl); }
-
-        @Override
-        public boolean charTyped(CharacterEvent event) {
-            if ( isNumber && (event.codepoint() < 48 || event.codepoint() > 57)
-                          && !(event.codepointAsString().equals("-") && hold.getValue().isEmpty())
-            ) return false;
-            boolean result = hold.charTyped(event);
-            this.change.onChange(this, false);
-            return result;
-        }
-
-        @Override
-        public boolean keyPressed(KeyEvent event) {
-            boolean result = hold.keyPressed(event);
-            change.onChange(this, event.isConfirmation());
-            return result;
-        }
-
-        @Override
-        public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
-            return hold.mouseClicked(event, bl);
-        }
-
-        @Override
-        protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-            hold.extractWidgetRenderState(graphics, mouseX, mouseY, a);
-        }
-
-        @Override
-        protected void onDrag(MouseButtonEvent event, double d, double e) {
-
-        }
-
-        public interface OnChange {
-            void onChange(EditBoxHolder holder, boolean isEnter);
-        }
-    }
 
     public static class MultiLineEditBoxHolder extends AbstractWidget {
-
         public MultiLineEditBox hold;
 
         public MultiLineEditBoxHolder(MultiLineEditBox hold) {
@@ -269,11 +194,6 @@ public class ModSettingsScreen extends LogDialogScreen {
         }
 
         @Override
-        protected void onDrag(MouseButtonEvent event, double d, double e) {
-
-        }
-
-        @Override
         public boolean mouseReleased(MouseButtonEvent event) {
             return hold.mouseReleased(event);
         }
@@ -281,33 +201,6 @@ public class ModSettingsScreen extends LogDialogScreen {
         @Override
         public boolean mouseDragged(MouseButtonEvent event, double d, double e) {
             return hold.mouseDragged(event, d, e);
-        }
-    }
-
-    public static class IntSlider extends AbstractSliderButton {
-        private final OnChange onChange;
-        private final int min;
-        private final int max;
-
-        public IntSlider(int x, int y, int w, int h, int min, int max, int instance, @NotNull OnChange onChange) {
-            super(x, y, w, h, Component.empty(), (double) instance / Math.abs(max - min));
-            this.onChange = onChange;
-            this.min = min;
-            this.max = max;
-        }
-
-        @Override
-        protected void updateMessage() {}
-
-        @Override
-        protected void applyValue() {
-            onChange.onChange(this, intValue());
-        }
-
-        public int intValue() { return (int) (this.value * Math.abs(max - min) - min); }
-
-        public interface OnChange {
-            void onChange(IntSlider slider, int value);
         }
     }
 }
