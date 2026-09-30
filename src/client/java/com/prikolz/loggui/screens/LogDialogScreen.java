@@ -2,7 +2,6 @@ package com.prikolz.loggui.screens;
 
 import com.prikolz.loggui.LogDialog;
 import com.prikolz.loggui.util.ColorUtil;
-import com.prikolz.loggui.util.Pair;
 import com.prikolz.loggui.widget.ColorPicker;
 import com.prikolz.loggui.widget.ColorPickerButton;
 import net.minecraft.client.Minecraft;
