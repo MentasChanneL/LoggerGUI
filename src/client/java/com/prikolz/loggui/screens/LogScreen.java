@@ -4,10 +4,12 @@ import com.prikolz.loggui.Config;
 import com.prikolz.loggui.LogDialog;
 import com.prikolz.loggui.widget.CustomButton;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
 
 public class LogScreen extends Screen {
     private static final Component TITLE = Component.translatable("loggui.gui.title");
@@ -19,7 +21,6 @@ public class LogScreen extends Screen {
     private static final Component CLOSE_MENU = CommonComponents.GUI_BACK;
 
     private static final Tooltip CLOSE_MENU_TOOLTIP = Tooltip.create(Component.translatable("loggui.gui.tooltip.close"));
-    private static final Tooltip REFRESH_TOOLTIP = Tooltip.create(Component.translatable("loggui.gui.tooltip.refresh"));
     private static final Tooltip SPLIT_TIMES_TOOLTIP = Tooltip.create(
             Component.translatable("loggui.gui.tooltip.split_times")
     );
@@ -77,10 +78,16 @@ public class LogScreen extends Screen {
             String value = e.hold.getValue();
             e.hold.setValue(value.startsWith("/") ? "/" : "");
             var connection = Minecraft.getInstance().getConnection();
-            if (connection == null) return;
-            if (value.startsWith("/")) connection.sendCommand(value.substring(1)); else connection.sendChat(value);
+            if (connection == null) {
+                LogDialog.LOGGER.warn("Unable to send message or command while not in the game");
+                return;
+            }
+            if (value.startsWith("/"))
+                connection.send(new ServerboundChatCommandPacket(value.substring(1)));
+            else
+                connection.sendChat(value);
         };
-        chatBox.hold.setFocused(true);
+        setFocused(chatBox);
 
         refreshButton = Button.builder(onPause ? REFRESH : PAUSE, button -> {
                     onPause = !onPause;
@@ -153,14 +160,18 @@ public class LogScreen extends Screen {
         if (lastScreen == null) return false;
         return lastScreen.isPauseScreen();
     }
-/*
-    @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        guiGraphics.fill(chatBox.hold.getX() - 2, chatBox.hold.getY() - 1, chatBox.hold.getX() + chatBox.hold.getWidth() + 5, chatBox.hold.getY() + chatBox.hold.getHeight() - 1, this.minecraft.options.getBackgroundColor(Integer.MIN_VALUE));
-        super.render(guiGraphics, i, j, f);
-    }
 
- */
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        graphics.fill(
+                chatBox.hold.getX() - 2,
+                chatBox.hold.getY() - 1,
+                chatBox.hold.getX() + chatBox.hold.getWidth() + 5,
+                chatBox.hold.getY() + chatBox.hold.getHeight() - 1,
+                this.minecraft.options.getBackgroundColor(Integer.MIN_VALUE)
+        );
+        super.extractRenderState(graphics, mouseX, mouseY, a);
+    }
 
     @Override
     public void tick() {

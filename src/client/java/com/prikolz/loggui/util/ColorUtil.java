@@ -52,7 +52,7 @@ public class ColorUtil {
         int min = Math.min(r, Math.min(g, b));
         float delta = max - min;
 
-        if (delta == 0) return 0f; // серый, hue не определён
+        if (delta == 0) return 0f;
 
         float hue;
         if (max == r) {

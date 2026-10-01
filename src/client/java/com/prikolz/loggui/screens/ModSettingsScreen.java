@@ -1,22 +1,15 @@
 package com.prikolz.loggui.screens;
 
 import com.prikolz.loggui.Config;
-import com.prikolz.loggui.LogDialog;
-import com.prikolz.loggui.util.ColorUtil;
-import com.prikolz.loggui.widget.ColorPickerButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ModSettingsScreen extends LogDialogScreen {
     private static final Component TITLE = Component.translatable("loggui.settings.title");
@@ -162,8 +155,6 @@ public class ModSettingsScreen extends LogDialogScreen {
     public void onClose() {
         Config.save();
     }
-
-
 
     public static class MultiLineEditBoxHolder extends AbstractWidget {
         public MultiLineEditBox hold;

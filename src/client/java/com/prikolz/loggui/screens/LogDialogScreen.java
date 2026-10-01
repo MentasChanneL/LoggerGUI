@@ -47,6 +47,7 @@ public abstract class LogDialogScreen extends Screen {
         public EditBox hold;
         public OnChange change;
         public boolean isNumber = false;
+        public boolean detectUnfocus = false;
 
         public EditBoxHolder(int x, int y, int w, int h) {
             super(x, y, w, h, Component.empty());
@@ -61,7 +62,7 @@ public abstract class LogDialogScreen extends Screen {
         @Override
         public void setFocused(boolean bl) {
             hold.setFocused(bl);
-            if (!bl) this.change.onChange(this, true);
+            if (!bl && detectUnfocus) this.change.onChange(this, true);
         }
 
         @Override
@@ -117,6 +118,7 @@ public abstract class LogDialogScreen extends Screen {
             this.onChangeColor = onChange;
             String hex = ColorUtil.toHex(initColor, false);
             field = new LogDialogScreen.EditBoxHolder(x, y, fieldWidth, fieldHeight);
+            field.detectUnfocus = true;
             field.hold.setValue(hex);
             field.hold.setMaxLength(7);
             field.change = (e, isEnter) -> {

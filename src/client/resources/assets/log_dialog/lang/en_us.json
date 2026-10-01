@@ -17,5 +17,7 @@
   "loggui.settings.info_title": "Info prefix",
   "loggui.settings.warn_title": "Warn prefix",
   "loggui.settings.err_title": "Error prefix",
-  "loggui.settings.lines_limit_title": "Lines limit"
+  "loggui.settings.lines_limit_title": "Lines limit",
+  "log_dialog.settings.color_picker.tooltip.open": "Open palette",
+  "log_dialog.settings.color_picker.tooltip.close": "Close palette"
 }

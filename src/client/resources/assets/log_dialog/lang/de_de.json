@@ -17,5 +17,7 @@
   "loggui.settings.info_title": "Info-Präfix",
   "loggui.settings.warn_title": "Warn-Präfix",
   "loggui.settings.err_title": "Fehler-Präfix",
-  "loggui.settings.lines_limit_title": "Zeilenbegrenzung"
+  "loggui.settings.lines_limit_title": "Zeilenbegrenzung",
+  "log_dialog.settings.color_picker.tooltip.open": "Palette öffnen",
+  "log_dialog.settings.color_picker.tooltip.close": "Palette schließen"
 }

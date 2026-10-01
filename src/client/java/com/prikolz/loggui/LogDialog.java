@@ -7,10 +7,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractTextAreaWidget;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
-import net.minecraft.client.gui.screens.inventory.AnvilScreen;
-import net.minecraft.client.gui.screens.inventory.SignEditScreen;
+import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
@@ -56,14 +56,17 @@ public class LogDialog implements ClientModInitializer {
             int key = keyMixin.getKey().getValue();
             if (key <= 0) return;
 			if ( InputConstants.isKeyDown(key) ) {
-				if (
-						screen instanceof KeyBindsScreen ||
-						screen instanceof LogScreen ||
-						screen instanceof ChatScreen ||
-						screen instanceof LevelLoadingScreen ||
-						screen instanceof SignEditScreen ||
-						screen instanceof AnvilScreen
-				) return;
+                if (screen != null) {
+                    var focused = screen.getFocused();
+                    if (focused instanceof AbstractTextAreaWidget) return;
+                    if (
+                        screen instanceof LogScreen ||
+                        screen instanceof ChatScreen ||
+                        screen instanceof LevelLoadingScreen ||
+                        screen instanceof SignEditScreen ||
+                        screen instanceof CreativeModeInventoryScreen
+                    ) return;
+                }
 				Minecraft.getInstance().getSoundManager().play(
 						SimpleSoundInstance.forUI(SoundEvents.VILLAGER_WORK_LIBRARIAN, 1.0F)
 				);

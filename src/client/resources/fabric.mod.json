@@ -12,7 +12,7 @@
 		"sources": "https://github.com/MentasChanneL/LoggerGUI"
 	},
 	"license": "MIT",
-	"icon": "assets/loggui/icon.png",
+	"icon": "assets/log_dialog/icon.png",
 	"entrypoints": {
 		"client": [
 			"com.prikolz.loggui.LogDialog"
@@ -32,5 +32,13 @@
 		"minecraft": ">=1.21.11",
 		"java": ">=21"
 	},
-	"suggests": {}
+	"suggests": {},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/KR3kbVYQNG"
+			},
+			"update_checker": false
+		}
+	}
 }

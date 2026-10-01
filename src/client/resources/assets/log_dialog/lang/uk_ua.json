@@ -17,5 +17,7 @@
   "loggui.settings.info_title": "Префікс інформації",
   "loggui.settings.warn_title": "Префікс попередження",
   "loggui.settings.err_title": "Префікс помилки",
-  "loggui.settings.lines_limit_title": "Ліміт рядків"
+  "loggui.settings.lines_limit_title": "Ліміт рядків",
+  "log_dialog.settings.color_picker.tooltip.open": "Відкрити палітру",
+  "log_dialog.settings.color_picker.tooltip.close": "Закрити палітру"
 }
